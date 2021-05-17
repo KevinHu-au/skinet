@@ -13,13 +13,13 @@ namespace API
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            using (var scope = host.Services.CreateScope())
+            using (IServiceScope scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
-                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var servicesProvider = scope.ServiceProvider;
+                var loggerFactory = servicesProvider.GetRequiredService<ILoggerFactory>();
                 try
                 {
-                    var context = services.GetRequiredService<StoreContext>();
+                    var context = servicesProvider.GetRequiredService<StoreContext>();
                     await context.Database.MigrateAsync();
                     await StoreContextSeed.SeedAsync(context, loggerFactory);
                 }
